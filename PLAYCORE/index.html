@@ -191,6 +191,9 @@ dl{margin:0}
 .agree input{margin-top:3px;width:20px;height:20px;flex:none}
 .fmsg{min-height:1.4em;margin:12px 0 0;text-align:center;font-weight:700}
 .addbtn{width:100%;margin:10px 0 0}
+.fld input[type=email],.fld input[type=password]{width:100%;padding:12px 14px;border:0;border-radius:12px;background:var(--card);color:#fff;font:inherit;font-size:16px}
+.arow{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:8px;background:var(--card);border-radius:12px}
+.arow span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 @media (orientation:landscape) and (max-height:560px){
   .gwrap{flex-direction:row;justify-content:center;gap:24px}
   .gboard{width:min(calc(100dvh - 90px),46vw);min-width:0}
@@ -237,7 +240,6 @@ dl{margin:0}
     </section>
 
     <section class="view" id="v-games">
-      <button class="btn ghost addbtn" type="button" data-view="upload">＋ Добавить свою игру</button>
       <label class="search">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"/><path d="M20.5 20.5l-4-4"/></svg>
         <input id="q" type="search" placeholder="Поиск игр" autocomplete="off" enterkeyhint="search" aria-label="Поиск игр">
@@ -256,20 +258,28 @@ dl{margin:0}
       <div class="grid" id="favGrid"></div>
     </section>
 
-    <section class="view" id="v-upload">
-      <h2 class="sec">Добавить игру</h2>
-      <p class="help" style="text-align:left;margin-bottom:16px">Принимается один HTML-файл до 5 МБ (все стили и скрипты должны быть внутри файла). Игра появится в каталоге после проверки.</p>
-      <p class="empty" id="upOff" hidden>Загрузка игр пока не подключена.</p>
-      <form id="upForm" autocomplete="off">
-        <label class="fld"><span>Название</span><input id="upTitle" type="text" maxlength="40" required></label>
-        <label class="fld"><span>Категория</span><select id="upCat"><option value="easy">Лёгкая игра</option><option value="sim">Симулятор</option><option value="sports">Спорт</option></select></label>
-        <label class="fld"><span>Автор (по желанию)</span><input id="upAuthor" type="text" maxlength="24"></label>
-        <label class="fld"><span>Описание (по желанию)</span><textarea id="upDesc" maxlength="200"></textarea></label>
-        <label class="fld"><span>HTML-файл игры</span><input id="upFile" type="file" accept=".html,.htm,text/html"></label>
-        <label class="agree"><input id="upAgree" type="checkbox"><span>Игра моя или у меня есть право её публиковать, в ней нет вредоносного кода и запрещённого контента.</span></label>
-        <button class="btn" id="upBtn" type="submit" style="width:100%">Отправить на проверку</button>
-        <p class="fmsg" id="upMsg" role="status"></p>
+    <section class="view" id="v-admin">
+      <h2 class="sec">Панель владельца</h2>
+      <p class="empty" id="adOff" hidden>Supabase не подключён: впишите SB_URL и SB_KEY в index.html.</p>
+      <form id="adLogin" hidden>
+        <label class="fld"><span>Почта</span><input id="adEmail" type="email" autocomplete="username" required></label>
+        <label class="fld"><span>Пароль</span><input id="adPass" type="password" autocomplete="current-password" required></label>
+        <button class="btn" type="submit" style="width:100%">Войти</button>
+        <p class="fmsg" id="adLMsg" role="status"></p>
       </form>
+      <div id="adPanel" hidden>
+        <form id="adForm" autocomplete="off">
+          <label class="fld"><span>Название игры</span><input id="adTitle" type="text" maxlength="40" required></label>
+          <label class="fld"><span>Категория</span><select id="adCat"><option value="easy">Лёгкая игра</option><option value="sim">Симулятор</option><option value="sports">Спорт</option></select></label>
+          <label class="fld"><span>Иконка (картинка, по желанию)</span><input id="adIcon" type="file" accept="image/*"></label>
+          <label class="fld"><span>HTML-файл игры (до 5 МБ)</span><input id="adFile" type="file" accept=".html,.htm,text/html"></label>
+          <button class="btn" id="adBtn" type="submit" style="width:100%">Добавить игру</button>
+          <p class="fmsg" id="adMsg" role="status"></p>
+        </form>
+        <h2 class="sec">Игры, добавленные через панель</h2>
+        <div id="adList"></div>
+        <button class="btn ghost" id="adOut" type="button" style="width:100%;margin-top:18px">Выйти</button>
+      </div>
     </section>
 
     <section class="view" id="v-me">
@@ -300,9 +310,4 @@ dl{margin:0}
   <aside class="dr" aria-label="Меню">
     <span class="brand"><img class="mark" src="logo-mark.png" alt="" width="32" height="36"><span class="bt"><b>PLAYCORE</b><small>GAMING PLATFORM</small></span></span>
     <a href="#" data-view="home"><svg viewBox="0 0 24 24"><path d="M3.5 11L12 3.5 20.5 11V20a1 1 0 0 1-1 1H15v-6H9v6H4.5a1 1 0 0 1-1-1z"/></svg>Главная</a>
-    <a href="#" data-view="games"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="10" rx="5"/><path d="M8 11v4M6 13h4"/></svg>Все игры</a>
-    <a href="#" data-view="favs"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.3C1.2 8.4 3.2 5 6.6 5c2 0 3.5 1.1 5.4 3 1.9-1.9 3.4-3 5.4-3 3.4 0 5.4 3.4 4.1 6.7C19.5 16.4 12 21 12 21z"/></svg>Избранное</a>
-    <a href="#" data-view="upload"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Добавить игру</a>
-    <a href="#" data-view="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-6 8-6s7 1.5 8 6z"/></svg>Профиль</a>
-    <p>© 2026 PLAYCORE by Zenix Community</p>
-  </
+    <a href="#" data-view="games"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="10" rx="5"/><path d="M8 11v4M6 13h4"/></svg>
