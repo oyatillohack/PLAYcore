@@ -182,6 +182,15 @@ dl{margin:0}
 .cell.o{color:#ff6b6b}
 .cell.win{background:#17434b}
 
+.fld{display:block;margin:0 0 14px}
+.fld>span{display:block;margin:0 0 6px;font-size:14px;color:var(--muted)}
+.fld input[type=text],.fld select,.fld textarea{width:100%;padding:12px 14px;border:0;border-radius:12px;background:var(--card);color:#fff;font:inherit;font-size:16px}
+.fld textarea{min-height:84px;resize:vertical}
+.fld input[type=file]{width:100%;padding:10px;border-radius:12px;background:var(--card);color:var(--muted);font-size:14px}
+.agree{display:flex;gap:10px;align-items:flex-start;margin:0 0 16px;color:var(--muted);font-size:14px}
+.agree input{margin-top:3px;width:20px;height:20px;flex:none}
+.fmsg{min-height:1.4em;margin:12px 0 0;text-align:center;font-weight:700}
+.addbtn{width:100%;margin:10px 0 0}
 @media (orientation:landscape) and (max-height:560px){
   .gwrap{flex-direction:row;justify-content:center;gap:24px}
   .gboard{width:min(calc(100dvh - 90px),46vw);min-width:0}
@@ -228,6 +237,7 @@ dl{margin:0}
     </section>
 
     <section class="view" id="v-games">
+      <button class="btn ghost addbtn" type="button" data-view="upload">＋ Добавить свою игру</button>
       <label class="search">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"/><path d="M20.5 20.5l-4-4"/></svg>
         <input id="q" type="search" placeholder="Поиск игр" autocomplete="off" enterkeyhint="search" aria-label="Поиск игр">
@@ -244,6 +254,22 @@ dl{margin:0}
     <section class="view" id="v-favs">
       <h2 class="sec">Избранное</h2>
       <div class="grid" id="favGrid"></div>
+    </section>
+
+    <section class="view" id="v-upload">
+      <h2 class="sec">Добавить игру</h2>
+      <p class="help" style="text-align:left;margin-bottom:16px">Принимается один HTML-файл до 5 МБ (все стили и скрипты должны быть внутри файла). Игра появится в каталоге после проверки.</p>
+      <p class="empty" id="upOff" hidden>Загрузка игр пока не подключена.</p>
+      <form id="upForm" autocomplete="off">
+        <label class="fld"><span>Название</span><input id="upTitle" type="text" maxlength="40" required></label>
+        <label class="fld"><span>Категория</span><select id="upCat"><option value="easy">Лёгкая игра</option><option value="sim">Симулятор</option><option value="sports">Спорт</option></select></label>
+        <label class="fld"><span>Автор (по желанию)</span><input id="upAuthor" type="text" maxlength="24"></label>
+        <label class="fld"><span>Описание (по желанию)</span><textarea id="upDesc" maxlength="200"></textarea></label>
+        <label class="fld"><span>HTML-файл игры</span><input id="upFile" type="file" accept=".html,.htm,text/html"></label>
+        <label class="agree"><input id="upAgree" type="checkbox"><span>Игра моя или у меня есть право её публиковать, в ней нет вредоносного кода и запрещённого контента.</span></label>
+        <button class="btn" id="upBtn" type="submit" style="width:100%">Отправить на проверку</button>
+        <p class="fmsg" id="upMsg" role="status"></p>
+      </form>
     </section>
 
     <section class="view" id="v-me">
@@ -276,6 +302,7 @@ dl{margin:0}
     <a href="#" data-view="home"><svg viewBox="0 0 24 24"><path d="M3.5 11L12 3.5 20.5 11V20a1 1 0 0 1-1 1H15v-6H9v6H4.5a1 1 0 0 1-1-1z"/></svg>Главная</a>
     <a href="#" data-view="games"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="10" rx="5"/><path d="M8 11v4M6 13h4"/></svg>Все игры</a>
     <a href="#" data-view="favs"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.3C1.2 8.4 3.2 5 6.6 5c2 0 3.5 1.1 5.4 3 1.9-1.9 3.4-3 5.4-3 3.4 0 5.4 3.4 4.1 6.7C19.5 16.4 12 21 12 21z"/></svg>Избранное</a>
+    <a href="#" data-view="upload"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Добавить игру</a>
     <a href="#" data-view="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-6 8-6s7 1.5 8 6z"/></svg>Профиль</a>
     <p>© 2026 PLAYCORE by Zenix Community</p>
   </aside>
@@ -286,6 +313,7 @@ dl{margin:0}
     <button class="pb" id="pback" type="button" aria-label="Назад"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Назад</button>
     <h2 id="ptitle"></h2>
     <div class="phud" id="phud"></div>
+    <button class="pb sq" id="preport" type="button" aria-label="Пожаловаться" hidden><svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg></button>
     <button class="pb sq" id="pfs" type="button" aria-label="Во весь экран" hidden><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
   </div>
   <div class="pbody" id="pbody"></div>
@@ -297,6 +325,12 @@ dl{margin:0}
 var $=function(s,r){return (r||document).querySelector(s)};
 var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
 var uid=0;
+
+/* ---------- Supabase: вставьте свои данные (Settings → API) ---------- */
+var SB_URL='';   /* например: https://abcdxyz.supabase.co */
+var SB_KEY='';   /* anon public key (публичный, его можно хранить в коде) */
+var SB_ON=!!(SB_URL&&SB_KEY);
+var CATS={easy:'Лёгкая игра',sim:'Симулятор',sports:'Спорт'};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 
 /* ---------- хранилище ---------- */
@@ -356,8 +390,15 @@ var state={cat:'all',q:'',view:'home'};
 
 /* ---------- отрисовка ---------- */
 var PAD='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10a5 5 0 0 1 0 10H7A5 5 0 0 1 7 7zm1 3v1H7v2h1v1h2v-1h1v-2h-1v-1zm7.5 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm2 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" fill-rule="evenodd"/></svg>';
+function letterArt(g){
+  var h=0,t=String(g.name),i;
+  for(i=0;i<t.length;i++)h=(h*31+t.charCodeAt(i))%360;
+  return svgOpen('a'+(++uid),'hsl('+h+',70%,55%)','hsl('+((h+50)%360)+',70%,38%)')+
+    '<text x="200" y="250" text-anchor="middle" font-family="Arial,sans-serif" font-weight="800" font-size="170" fill="#fff" fill-opacity=".92">'+esc(t.charAt(0).toUpperCase())+'</text></svg>';
+}
 function artHtml(g){
-  return g.cover?'<img src="'+g.cover+'" alt="" loading="lazy" decoding="async" width="360" height="360">':ART[g.id]('a'+(++uid));
+  if(g.cover)return '<img src="'+g.cover+'" alt="" loading="lazy" decoding="async" width="360" height="360">';
+  return ART[g.id]?ART[g.id]('a'+(++uid)):letterArt(g);
 }
 function heartBtn(g){
   var on=favs.indexOf(g.id)>=0;
@@ -474,12 +515,16 @@ function showPlayer(g){
     pbody.className='pbody';
     pbody.innerHTML='<p class="loading">Загрузка…</p><iframe title="'+esc(g.name)+'" src="'+g.src+'" allow="fullscreen; autoplay; accelerometer; gyroscope" allowfullscreen></iframe>';
     var fr=$('iframe',pbody);fr.addEventListener('load',function(){var l=$('.loading',pbody);if(l)l.remove();try{fr.contentWindow.focus()}catch(e){}});
+  }else if(g.remote){
+    pbody.className='pbody';
+    loadRemote(g);
   }else{
     pbody.className='pbody ui';
     pbody.innerHTML='<div class="gwrap" id="stage"></div>';
     cur=g.init($('#stage'));
   }
   pfs.hidden=!canFs();
+  $('#preport').hidden=!g.remote;
 }
 function hidePlayer(){
   if(player.hidden)return;
@@ -808,9 +853,96 @@ function tttGame(stage){
   return {destroy:function(){dead=true;clearTimeout(tm)}};
 }
 
+/* ---------- игры от пользователей (Supabase) ---------- */
+function sb(path,opt){
+  opt=opt||{};
+  opt.headers=Object.assign({apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},opt.headers||{});
+  return fetch(SB_URL+path,opt);
+}
+/* игра идёт в песочнице без доступа к сайту, поэтому localStorage в ней недоступен.
+   Подставляем временное хранилище, чтобы игры не падали с ошибкой. */
+var SHIM='<script>(function(){try{window.localStorage.getItem("x")}catch(e){var m={},s={getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null},setItem:function(k,v){m[k]=String(v)},removeItem:function(k){delete m[k]},clear:function(){m={}},key:function(i){return Object.keys(m)[i]||null}};Object.defineProperty(s,"length",{get:function(){return Object.keys(m).length}});try{Object.defineProperty(window,"localStorage",{value:s,configurable:true});Object.defineProperty(window,"sessionStorage",{value:s,configurable:true})}catch(e2){}}})();<\/script>';
+function withShim(t){
+  var m=/<head[^>]*>/i.exec(t)||/<html[^>]*>/i.exec(t);
+  if(m){var i=m.index+m[0].length;return t.slice(0,i)+SHIM+t.slice(i)}
+  return SHIM+t;
+}
+function loadRemote(g){
+  pbody.innerHTML='<p class="loading">Загрузка…</p>';
+  fetch(SB_URL+'/storage/v1/object/public/games/'+encodeURIComponent(g.path))
+    .then(function(r){if(!r.ok)throw new Error('http');return r.text()})
+    .then(function(t){
+      if(curId!==g.id||player.hidden)return;
+      var fr=document.createElement('iframe');
+      fr.title=g.name;
+      fr.setAttribute('sandbox','allow-scripts allow-pointer-lock'); /* без allow-same-origin: игра изолирована от сайта */
+      fr.setAttribute('allow','fullscreen; autoplay; accelerometer; gyroscope');
+      fr.srcdoc=withShim(t);
+      fr.addEventListener('load',function(){var l=$('.loading',pbody);if(l)l.remove()});
+      pbody.appendChild(fr);
+    })
+    .catch(function(){if(curId===g.id)pbody.innerHTML='<p class="loading">Не удалось загрузить игру</p>'});
+}
+function loadCatalog(){
+  if(!SB_ON)return;
+  sb('/rest/v1/games?select=id,title,category,author,file_path&status=eq.approved&order=created_at.desc&limit=200')
+    .then(function(r){return r.json()})
+    .then(function(rows){
+      if(!Array.isArray(rows))return;
+      rows.forEach(function(r){
+        var cat=CATS[r.category]?r.category:'easy';
+        GAMES.push({id:'u-'+r.id,dbId:r.id,name:String(r.title||'Игра'),cat:cat,
+          tag:CATS[cat]+(r.author?' · '+r.author:''),remote:true,path:r.file_path});
+      });
+      renderAll();route();
+    })
+    .catch(function(){});
+}
+function newName(){
+  var u=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():(Date.now().toString(36)+Math.random().toString(36).slice(2,10));
+  return u+'.html';
+}
+var upForm=$('#upForm'),upMsg=$('#upMsg'),upBtn=$('#upBtn');
+$('#upOff').hidden=SB_ON;upForm.hidden=!SB_ON;
+function say(t,ok){upMsg.textContent=t;upMsg.style.color=ok?'#4ade80':'#f87171'}
+upForm.addEventListener('submit',function(e){
+  e.preventDefault();
+  var f=$('#upFile').files[0],title=$('#upTitle').value.trim();
+  if(!title)return say('Введите название');
+  if(!f)return say('Выберите HTML-файл');
+  if(!/\.html?$/i.test(f.name))return say('Нужен файл .html');
+  if(f.size>5*1024*1024)return say('Файл больше 5 МБ');
+  if(!$('#upAgree').checked)return say('Поставьте галочку подтверждения');
+  if(Date.now()-(+getD('lastUp',0))<60000)return say('Подождите минуту перед следующей отправкой');
+  var path=newName();
+  upBtn.disabled=true;say('Отправка…',true);
+  sb('/storage/v1/object/games/'+path,{method:'POST',headers:{'Content-Type':'text/html'},body:f})
+    .then(function(r){
+      if(!r.ok)throw new Error('upload');
+      return sb('/rest/v1/games',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},
+        body:JSON.stringify({title:title,category:$('#upCat').value,author:$('#upAuthor').value.trim()||null,
+          description:$('#upDesc').value.trim()||null,file_path:path})});
+    })
+    .then(function(r){
+      if(!r.ok)throw new Error('insert');
+      setD('lastUp',Date.now());upForm.reset();
+      say('Готово! Игра отправлена на проверку.',true);
+    })
+    .catch(function(){say('Не удалось отправить. Попробуйте позже.')})
+    .then(function(){upBtn.disabled=false});
+});
+$('#preport').addEventListener('click',function(){
+  var g=byId(curId);if(!g||!g.dbId)return;
+  if(!confirm('Отправить жалобу на эту игру?'))return;
+  sb('/rest/v1/reports',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({game_id:g.dbId})})
+    .then(function(r){alert(r.ok?'Спасибо, жалоба отправлена.':'Не удалось отправить жалобу.')})
+    .catch(function(){alert('Не удалось отправить жалобу.')});
+});
+
 /* ---------- запуск ---------- */
 renderAll();
 route();
+loadCatalog();
 })();
 </script>
 </body>
